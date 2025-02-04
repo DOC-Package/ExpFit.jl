@@ -34,6 +34,8 @@ end
 
 """
     calc_roots(a::Vector{Complex{T}}) where T<:Real
+
+Calculate the roots of a polynomial with coefficients `a`.
 """
 
 function calc_roots(a::Vector{Complex{T}}) where T<:Real

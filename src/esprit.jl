@@ -11,7 +11,10 @@ constructed from `hk`.
 Returns: A vector of eigenvalues γ.
 """
 function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; q::Union{Int,Nothing}=nothing)
+    # Hankel matrix construction.
     H = hankel_matrix(hk; q=q)
+
+    # Perform SVD on the Hankel matrix.
     svd_res = svd(H, full=true)
     sv = svd_res.S
     V  = svd_res.V'
@@ -20,9 +23,8 @@ function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; q::Union{Int,No
     M = count(>(eps * sv[1]), sv)
     
     q = size(H, 2)
-    @assert q > 1 "Insufficient number of samples. The Hankel matrix must have more than one column."
-    W0 = transpose( V[1:M, 1:(q-1)] )
-    W1 = transpose( V[1:M, 2:q] ) 
+    W0 = transpose(V[1:M, 1:(q-1)])
+    W1 = transpose(V[1:M, 2:q]) 
     FM = pinv(W0) * W1
     
     gamm = eigvals(FM)
@@ -66,6 +68,7 @@ Returns: A tuple containing the estimated exponents and coefficients.
 """
 function esprit(func::Function, tmin::Real, tmax::Real, K::Int, eps::Real; q::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (K - 1)
+    hk = Vector{ComplexF64}(undef, K)
     hk = [func(tmin + dt * (k-1)) for k in 1:K]
     return esprit(hk, dt, eps; q=q)
 end
