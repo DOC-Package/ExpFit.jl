@@ -80,4 +80,10 @@ function hankel_matrix(hk::AbstractVector{<:ComplexF64}; q::Union{Int,Nothing}=n
     return [hk[i + j - 1] for i in 1:p, j in 1:q]
 end
 
-    
+function sumexp(t, a, c)
+    s = 0.0 + 0.0im
+    @inbounds for m in 1:length(a)
+        s += c[m] * exp(-a[m] * t)
+    end
+    return s
+end

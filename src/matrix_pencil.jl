@@ -36,7 +36,7 @@ function matrix_pencil_sub(hk::AbstractVector{<:ComplexF64}, L::Int, epsin::Real
     
     # Compute the eigenvalues of the pencil.
     gamm = eigvals(FM)
-    return gamm, M
+    return gamm
 end
 
 # -------------------------------------------------------------------------
@@ -92,73 +92,4 @@ function matrix_pencil(func::Function, tmin::Real, tmax::Real, K::Int, eps::Real
     dt = (tmax - tmin) / (K - 1)
     hk = [func(tmin + dt * (k - 1)) for k in 1:K]
     return matrix_pencil(hk, dt, eps; q=q)
-end
-
-
-"""
-    matrix_pencil_potts(func, tmax, epsin, N)
-
-
-# 引数
-- `func`: t を受け取り、complex(real64)=ComplexF64 を返す関数 (元の信号)。
-- `tmax`: 時間区間の最大値。
-- `epsin`: しきい値 (今回は実際には使われていないコメントアウトされた部分あり)。
-- `N`: データサイズパラメータ (Fortran では L=N のように利用している)。
-
-# 戻り値
-- `(rho, alpha)`
-   - `rho`: 係数 (ComplexF64 ベクトル)
-   - `alpha`: 成長率・減衰率など (ComplexF64 ベクトル)
-"""
-
-function matrix_pencil(
-    func::Function,
-    tmin::Real,
-    tmax::Real,  
-    epsin::Real,  
-    N::Int,          
-    L::Int   
-)
-
-    # Generate discrete samples
-    hk = Vector{ComplexF64}(undef, 2N)
-    hk = [func((tmax - tmin) * (k / (2N - 1)) + tmin) for k in 0:2N-1]
-
-    # Hankel matrix
-    Hkm = Matrix{ComplexF64}(undef, 2N-L, L+1)
-    Hkm = [hk[k + m - 1] for k in 1:(2N - L), m in 1:(L + 1)]
-
-    # QR decomposition
-    pvt = Val{true}
-    res = qr(Hkm, ColumnNorm())
-    R = Matrix(res.R) * transpose(res.P)
-
-    # Determine M
-    m_opt = findfirst(m -> abs(R[m + 1, m + 1]) / abs(R[1, 1]) < epsin, 1:L)
-    M = m_opt !== nothing ? m_opt + 1 : 1
-
-    T0t = transpose(R[1:M, 1:L])
-    T1t = transpose(R[1:M, 2:(L+1)])
-    FM = pinv(T0t) * T1t
-    gamm = eigvals(FM)
-
-    # Solve the Vandermonde system
-    Gmn = Matrix{ComplexF64}(undef, 2N, M)
-    Gmn = [gamm[m]^k for k in 0:2N-1, m in 1:M]
-
-    # Coefficients
-    coeff = Gmn \ hk
-
-    # Exponents
-    exponent = Vector{ComplexF64}(undef, M)
-    for m in 1:M
-        exponent[m] = -log(gamm[m]) * (2N-1) / (tmax-tmin)
-    end
-
-    # Sort by magnitude
-    idx = sortperm(coeff, by = x -> abs(x), rev=true)
-    exponent = exponent[idx]
-    coeff = coeff[idx]
-
-    return exponent, coeff
 end

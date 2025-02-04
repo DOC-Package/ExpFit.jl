@@ -4,14 +4,6 @@ using ExpFit
 using SpecialFunctions
 
 @testset "matrix_pencil.jl" begin 
-    
-    function f_approx(t, a, c)
-        s = 0.0 + 0.0im
-        @inbounds for m in 1:length(a)
-            s += c[m] * exp(-a[m] * t)
-        end
-        return s
-    end
 
     tmin = 0.0
     tmax  = 50.0      
