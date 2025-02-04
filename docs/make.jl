@@ -8,7 +8,7 @@ makedocs(;
     authors="Hideaki Takahashi <hide.kyoto.1020@gmail.com> and contributors",
     sitename="ExpFit.jl",
     format=Documenter.HTML(;
-        canonical="https://DOC-package.github.io/ExpFit.jl",
+        canonical="https://DOC-Package.github.io/ExpFit.jl",
         edit_link="main",
         assets=String[],
     ),
@@ -18,6 +18,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/DOC-package/ExpFit.jl",
+    repo="github.com/DOC-Package/ExpFit.jl",
     devbranch="main",
 )
