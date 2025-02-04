@@ -10,8 +10,8 @@ constructed from `hk`.
 
 Returns: A vector of eigenvalues γ.
 """
-function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; p::Union{Int,Nothing}=nothing)
-    H = hankel_matrix(hk; p=p)
+function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; q::Union{Int,Nothing}=nothing)
+    H = hankel_matrix(hk; q=q)
     svd_res = svd(H, full=true)
     sv = svd_res.S
     V  = svd_res.V'
@@ -43,8 +43,8 @@ Perform the ESPRIT algorithm using discrete data `hk` and the sampling interval 
 Returns: A tuple containing the estimated exponents and coefficients.
 Note: The solution of the Vandermonde system is delegated to the function `solve_vandermonde`, which is assumed to be implemented elsewhere.
 """
-function esprit(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real; p::Union{Int,Nothing}=nothing)
-    gamm = esprit_sub(hk, eps; p=p)
+function esprit(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real; q::Union{Int,Nothing}=nothing)
+    gamm = esprit_sub(hk, eps; q=q)
     # The function solve_vandermonde is assumed to be implemented in another file.
     exponent, coeff = solve_vandermonde(hk, gamm, dt)
     return exponent, coeff
@@ -64,9 +64,8 @@ and then perform the ESPRIT algorithm.
 
 Returns: A tuple containing the estimated exponents and coefficients.
 """
-function esprit(func::Function, tmin::Real, tmax::Real, K::Int, eps::Real; p::Union{Int,Nothing}=nothing)
-    #K = 2 * N  # Adjust to 2N-1 if needed.
+function esprit(func::Function, tmin::Real, tmax::Real, K::Int, eps::Real; q::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (K - 1)
     hk = [func(tmin + dt * (k-1)) for k in 1:K]
-    return esprit(hk, dt, eps; p=p)
+    return esprit(hk, dt, eps; q=q)
 end

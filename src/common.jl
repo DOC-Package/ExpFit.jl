@@ -33,24 +33,50 @@ function solve_vandermonde(
 end
 
 """
-    hankel_matrix(hk; p=nothing)
+    hankel_matrix(hk; q=nothing)
 
 Construct a Hankel matrix from the discrete data `hk` (a vector of complex numbers).
 
 - `hk` : Data vector (of length K).
-- `p`  : Number of rows for the Hankel matrix (optional).
-         If not provided, `p` is set to ⌊(K+1)/2⌋ and `q` is computed as `K+1-p`.
+- `q`  : Number of columns for the Hankel matrix (optional). 
+         If not provided, the default is:
+           - For K = 2N (even), q is set to N+1.
+           - For K = 2N-1 (odd),  q is set to N.
+         The allowed values are:
+           - For K = 2N: 2 ≤ q ≤ N+1.
+           - For K = 2N-1: 2 ≤ q ≤ N.
 
-Returns: A p × q Hankel matrix H such that H[i,j] = hk[i+j-1].
+Returns: A p × q Hankel matrix H such that H[i,j] = hk[i+j-1],
+         where p is computed as p = K + 1 - q.
 """
-function hankel_matrix(hk::AbstractVector{<:ComplexF64}; p::Union{Int,Nothing}=nothing)
+function hankel_matrix(hk::AbstractVector{<:ComplexF64}; q::Union{Int,Nothing}=nothing) :: Matrix{ComplexF64}
     K = length(hk)
-    if p === nothing
-        p = (K + 1) ÷ 2
+    
+    if iseven(K)
+        N = K ÷ 2
     else
-        @assert (K ÷ 2) ≤ p ≤ (K + 1) "The value of p must be between (K÷2) and (K+1)."
+        N = (K + 1) ÷ 2
     end
-    q = K + 1 - p
+
+    # Set default q if not provided.
+    if q === nothing
+        if iseven(K)
+            q = N + 1    
+        else
+            q = N    
+        end
+    end
+
+    # Validate that q is within the allowed range.
+    if iseven(K)
+        @assert 2 <= q <= N+1 
+    else
+        @assert 2 <= q <= N 
+    end
+
+    # Compute the number of rows p.
+    p = K + 1 - q
+
     return [hk[i + j - 1] for i in 1:p, j in 1:q]
 end
 
