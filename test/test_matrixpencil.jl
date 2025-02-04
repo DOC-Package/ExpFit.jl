@@ -1,3 +1,4 @@
+include("utils.jl")
 using Test
 using LinearAlgebra
 using ExpFit

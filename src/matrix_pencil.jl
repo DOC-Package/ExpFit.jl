@@ -7,7 +7,7 @@ constructed from the discrete data `hk`.
 - `hk`    : A vector of complex samples. It is assumed that the length of `hk` is 2N.
 - `L`     : An integer parameter for constructing the Hankel matrix. The Hankel matrix
             is built with dimensions (2N - L) × (L + 1).
-- `epsin` : A threshold used for model order determination. Specifically, the model order
+- `eps` : A threshold used for model order determination. Specifically, the model order
             M is determined as the smallest index m (with 1 ≤ m ≤ L) such that 
             |R[m+1, m+1]|/|R[1,1]| < epsin. In that case, M is set to m+1;
             if no such index is found, M is set to 1.
