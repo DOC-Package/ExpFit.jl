@@ -18,6 +18,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/htkhsh/ExpFit.jl",
+    repo="github.com/DOC-package/ExpFit.jl",
     devbranch="main",
 )
