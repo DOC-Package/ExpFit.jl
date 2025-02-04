@@ -1,0 +1,23 @@
+using ExpFit
+using Documenter
+
+DocMeta.setdocmeta!(ExpFit, :DocTestSetup, :(using ExpFit); recursive=true)
+
+makedocs(;
+    modules=[ExpFit],
+    authors="Hideaki Takahashi <hide.kyoto.1020@gmail.com> and contributors",
+    sitename="ExpFit.jl",
+    format=Documenter.HTML(;
+        canonical="https://htkhsh.github.io/ExpFit.jl",
+        edit_link="main",
+        assets=String[],
+    ),
+    pages=[
+        "Home" => "index.md",
+    ],
+)
+
+deploydocs(;
+    repo="github.com/htkhsh/ExpFit.jl",
+    devbranch="main",
+)
