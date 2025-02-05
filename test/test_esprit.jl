@@ -19,7 +19,7 @@ using SpecialFunctions
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
 
-    @time exponent, coeff = esprit(f, tmin, tmax, N, eps; q=q)
+    @time exponent, coeff = esprit(f, tmin, tmax, N, eps; cols=q)
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
 
@@ -43,7 +43,7 @@ using SpecialFunctions
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
 
-    @time exponent, coeff = esprit(f, tmin, tmax, N, eps; q=q)
+    @time exponent, coeff = esprit(f, tmin, tmax, N, eps; cols=q)
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
 

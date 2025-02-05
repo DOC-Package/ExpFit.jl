@@ -19,6 +19,7 @@ using SpecialFunctions
     @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps)
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
+    print("error =", norm(err), "\n")
     """
     @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps; q=q)
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
@@ -27,6 +28,7 @@ using SpecialFunctions
     exponent, coeff = matrix_pencil(f, tmin, tmax, eps, 100, 100)
     err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
+    print("error =", norm(err), "\n")
 
     """
     f = t -> besselj(2,t) + 1.0im*besselj(3,t)
