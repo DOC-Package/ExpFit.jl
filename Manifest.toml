@@ -2,7 +2,13 @@
 
 julia_version = "1.11.3"
 manifest_format = "2.0"
-project_hash = "b4fbb110cd6c12ed12471c0700d020f7a8909685"
+project_hash = "b901e8507a4d9ffd3570fa9316b84def94613e83"
+
+[[deps.AMRVW]]
+deps = ["LinearAlgebra", "Random"]
+git-tree-sha1 = "2429af1c58a2d9815b93a592995e314e8864f8d1"
+uuid = "233ec0c9-6b8d-4766-b9a2-a16e389fc38a"
+version = "1.2.1"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -26,6 +32,15 @@ version = "1.11.0"
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
 version = "0.3.27+1"
+
+[[deps.Random]]
+deps = ["SHA"]
+uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+version = "1.11.0"
+
+[[deps.SHA]]
+uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl"]

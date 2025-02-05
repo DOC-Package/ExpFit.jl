@@ -3,12 +3,6 @@
 
 Estimate the eigenvalues γ using the ESPRIT subspace method from the Hankel matrix
 constructed from `hk`.
-
-- `hk` : A vector of complex data.
-- `eps`: Threshold used to distinguish noise. Singular values smaller than `eps` times the largest singular value are considered noise.
-- `p`  : Number of rows for the Hankel matrix (optional).
-
-Returns: A vector of eigenvalues γ.
 """
 function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; cols::Union{Int,Nothing}=nothing)
     # Hankel matrix construction.
@@ -26,45 +20,29 @@ function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; cols::Union{Int
     W0 = transpose(V[1:M, 1:(cols-1)])
     W1 = transpose(V[1:M, 2:cols]) 
     FM = pinv(W0) * W1
-    
-    gamm = eigvals(FM)
-    return gamm
+    γ = eigvals(FM)
+
+    return γ
 end
 
 
 """
-    esprit(hk, dt, eps; p=nothing) -> exponent, coeff
+    esprit(hk, dt, eps; cols=nothing) -> exponent, coeff
 
 Perform the ESPRIT algorithm using discrete data `hk` and the sampling interval `dt`.
-
-- `hk` : Discrete data (vector of complex numbers).
-- `dt` : Sampling interval.
-- `eps`: Threshold for singular value determination.
-- `cols`  : Number of rows for the Hankel matrix (optional).
-
-Returns: A tuple containing the estimated exponents and coefficients.
-Note: The solution of the Vandermonde system is delegated to the function `solve_vandermonde`, which is assumed to be implemented elsewhere.
 """
 function esprit(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real; cols::Union{Int,Nothing}=nothing)
     gamm = esprit_sub(hk, eps; cols=cols)
     # The function solve_vandermonde is assumed to be implemented in another file.
-    exponent, coeff = solve_vandermonde(hk, gamm, dt)
-    return exponent, coeff
+    expon, coeff = solve_vandermonde(hk, gamm, dt)
+    return ExponentialFitting(expon, coeff)
 end
 
 """
-    esprit(func, tmin, tmax, N, eps; p=nothing) -> (exponent, coeff)
+    esprit(func, tmin, tmax, K, eps; cols=nothing) -> (exponent, coeff)
 
 Sample the function `func` over the interval [tmin, tmax] to create discrete data,
 and then perform the ESPRIT algorithm.
-
-- `func` : The function to be sampled (should return a real or complex number).
-- `tmin, tmax` : Endpoints of the sampling interval.
-- `N`    : Number of samples (this implementation generates 2N data points).
-- `eps`  : Threshold for singular value determination.
-- `p`    : Number of rows for the Hankel matrix (optional).
-
-Returns: A tuple containing the estimated exponents and coefficients.
 """
 function esprit(func::Function, tmin::Real, tmax::Real, K::Int, eps::Real; cols::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (K - 1)

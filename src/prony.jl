@@ -38,10 +38,11 @@ end
 Calculate the roots of a polynomial with coefficients `a`.
 """
 
-function calc_roots(a::Vector{Complex{T}}) where T<:Real
-    nd = length(a)
+function calc_roots(a::Vector{ComplexF64}) 
+    nd = length(a)-1
+    a = a[1:nd] ./ a[end]
     
-    Ca = zeros(Complex{T}, nd, nd)
+    Ca = zeros(ComplexF64, nd, nd)
     for n in 1:(nd-1)
         Ca[n+1, n] = 1.0 + 0im
     end
@@ -54,7 +55,7 @@ function calc_roots(a::Vector{Complex{T}}) where T<:Real
     roots = eigen(Ca).values
 
     # check the error
-    czero = Vector{Complex{T}}(undef, nd)
+    czero = Vector{ComplexF64}(undef, nd)
     for n in 1:nd
         czero[n] = roots[n]^nd
         for m in 1:nd
@@ -66,29 +67,32 @@ function calc_roots(a::Vector{Complex{T}}) where T<:Real
     return roots, err
 end
 
+function roots_error(coeff::Vector{ComplexF64}, roots::Vector{ComplexF64})
+    nd = length(roots)
+    czero = Vector{ComplexF64}(undef, nd)
+    for n in 1:nd
+        czero[n] = roots[n]^nd
+        for m in 1:nd
+            czero[n] += coeff[m] * roots[n]^(m-1)
+        end
+    end
+    err = norm(czero)
+
+    return err
+end
+
 
 """
     prony(func, tmax, Nin, Mout)
 
-# Arguments
-- `func::Function`
-    - 実数 t を受け取り複素数を返す関数 (Fortran の `complex(real64), external :: func`)
-- `tmax::Float64`
-    - サンプリング区間 [0, tmax]
-- `Nin::Int`
-    - サンプリング・行列次元などに使う整数パラメータ
-- `Mout::Int`
-    - 出力モード数 (Fortran で intent(inout) だったもの)
-
-# Returns
-- `(Mout_new, rhoout, alphaout)`
+Estimate the exponents and coefficients of the Prony series for the function `func`.    
 """
 function prony(
     func::Function,
     tmin::Float64,
     tmax::Float64,
-    eps::Float64,
-    N::Int
+    N::Int,
+    eps::Float64
 )
 
     hk = Vector{ComplexF64}(undef, 2N+1)
@@ -100,31 +104,18 @@ function prony(
     
     # Takagi factorization
     sv, U, err = takagi_factor(Hkl)
+    @assert err < 1e-12 "error in Takagi factorization: $err"
+    
     M = count(>(eps * sv[1]), sv[1:N+1]) + 1
 
-    uvt = copy(conj(U[:, M]))  
-    uvt ./= uvt[N+1]      
-    uv = copy(uvt[1:N])
-    roots, err = calc_roots(uv) 
-    println("err: ", err)
+    uv = conj(U[:, M])
+    
+    # Roots
+    roots = AMRVW.roots(uv)
     roots = sort(roots, by = x -> abs(x))
-    gamm = roots[1:M]
+    γ = roots[1:M]
 
-    # Solve the Vandermonde system
-    Gmn = Matrix{ComplexF64}(undef, 2N+1, M)
-    Gmn = [gamm[m]^k for k in 0:2N, m in 1:M]
+    expon, coeff = solve_vandermonde(hk, γ, dt)
 
-    # Coefficients
-    coeff = Gmn \ hk
-
-    # Exponents
-    exponent = Vector{ComplexF64}(undef, M)
-    exponent = [-log(gamm[m]) / dt for m in 1:M]
-
-    # Sort by magnitude
-    idx = sortperm(coeff, by = x -> abs(x), rev=true)
-    coeff = coeff[idx]
-    exponent = gamm[idx]
-
-    return exponent, coeff
+    return expon, coeff
 end
