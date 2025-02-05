@@ -1,7 +1,7 @@
 """
     solve_vandermonde()
 
-
+Solve the Vandermode system
 """
 
 function solve_vandermonde(
