@@ -15,9 +15,8 @@ using SpecialFunctions
     t = range(tmin, tmax, length=N)
     f = t -> besselj(0,t) + 1.0im*besselj(1,t)
 
-    @time ef = esprit(f, tmin, tmax, N, eps)
+    @time ef = esprit(f, tmin, tmax, eps; nsamples=N)
     err = abs.(ef.(t) .- f.(t))
-    #err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
     @test norm(err) < eps*10.0
 
     """

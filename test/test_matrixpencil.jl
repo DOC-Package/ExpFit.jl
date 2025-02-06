@@ -16,8 +16,8 @@ using SpecialFunctions
     f = t -> besselj(0,t) + 1.0im*besselj(1,t)
 
     
-    @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
+    @time ef = matrix_pencil(f, tmin, tmax, eps; nsamples=N)
+    err = abs.(ef.(t) .- f.(t))
     @test norm(err) < eps*10.0
     print("error =", norm(err), "\n")
     

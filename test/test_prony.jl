@@ -9,15 +9,15 @@ using SpecialFunctions
     tmin = 0.0
     tmax  = 50.0      
     eps = 1e-3     
-    N = 50
+    N = 101
     q = 33             
 
     t = range(tmin, tmax, length=2*N)
     f = t -> besselj(0,t) + 1.0im*besselj(1,t)
 
-    @time exponent, coeff = prony(f, tmin, tmax, N, eps)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
-    print("error =", norm(err), "\n")
+    @time ef = prony(f, tmin, tmax, eps; nsamples=N)
+    err = abs.(ef.(t) .- f.(t))
     @test norm(err) < eps*10.0
+    print("error = ", norm(err), "\n")
 
 end
