@@ -42,7 +42,7 @@ function prony_sub(hk::Vector{ComplexF64}, eps::Float64)
     # Takagi factorization
     sv, U = takagi_factor(H)
     # Determine the model order M
-    M = count(>(eps * sv[1]), sv[1:end]) + 1
+    M = count(>(eps * sv[1]), sv) 
     
     # Roots
     uv = conj(U[:, M])
@@ -76,33 +76,43 @@ Estimate the exponents and coefficients of the Prony series for the function `fu
 """
 
 function prony(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real)
-    gamm = prony_sub(hk, eps; ncols=ncols)
+    gamm = prony_sub(hk, eps)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
     return ExponentialFitting(expon, coeff)
 end
 
-function prony(func::Function, tmin::Float64, tmax::Float64, eps::Float64; nsamples::Int=501)
-    # K must be odd
+function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, eps::Float64)
     @assert isodd(nsamples) "nsamples must be odd"
-    hk = Vector{ComplexF64}(undef, nsamples)
     dt = (tmax-tmin) / (nsamples-1)
     hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
-    return prony(hk, dt, eps; ncols=ncols)
+    return prony(hk, dt, eps)
+end
+
+function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, eps::Float64)
+    @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
+    nsamples = Int(round((tmax-tmin)/dt)) + 1
+    hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
+    return prony(hk, dt, eps)
 end
 
 function prony(hk::AbstractVector{<:ComplexF64}, dt::Real, M::Int)
-    gamm = prony_sub(hk, eps; ncols=ncols)
+    gamm = prony_sub(hk, M)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
     return ExponentialFitting(expon, coeff)
 end
 
-function prony(func::Function, tmin::Float64, tmax::Float64, M::Int; nsamples::Int=501)
-    # K must be odd
+function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, M::Int)
     @assert isodd(nsamples) "nsamples must be odd for Prony method"
-    hk = Vector{ComplexF64}(undef, nsamples)
     dt = (tmax-tmin) / (nsamples-1)
     hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
-    return prony(hk, dt, M; ncols=ncols)
+    return prony(hk, dt, M)
+end
+
+function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, M::Int)
+    @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
+    nsamples = Int(round((tmax-tmin)/dt)) + 1
+    hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
+    return prony(hk, dt, M)
 end
 
 

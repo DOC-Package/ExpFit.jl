@@ -1,7 +1,8 @@
 module ExpFit
 
-export ExponentialFitting
-export prony, matrix_pencil, esprit
+export ExponentialFitting, ESPRIT, MPencil, Prony
+export prony, matrix_pencil, esprit, expfit
+export coneig
 
 include("types.jl")
 include("common.jl")

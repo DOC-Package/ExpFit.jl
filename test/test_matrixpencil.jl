@@ -1,4 +1,3 @@
-include("utils.jl")
 using Test
 using LinearAlgebra
 using ExpFit
@@ -9,17 +8,17 @@ using SpecialFunctions
     tmin = 0.0
     tmax  = 50.0      
     eps = 1e-4     
-    N = 200
+    N = 100
     q = 33             
 
     t = range(tmin, tmax, length=N)
     f = t -> besselj(0,t) + 1.0im*besselj(1,t)
 
     
-    @time ef = matrix_pencil(f, tmin, tmax, eps; nsamples=N)
+    @time ef = matrix_pencil(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- f.(t))
-    @test norm(err) < eps*10.0
-    print("error =", norm(err), "\n")
+    @test norm(err)/sqrt(N) < eps
+    print("error = ", norm(err)/sqrt(N), "\n")
     
     """
     @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps; q=q)

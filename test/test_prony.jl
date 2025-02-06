@@ -8,16 +8,23 @@ using SpecialFunctions
 
     tmin = 0.0
     tmax  = 50.0      
-    eps = 1e-3     
-    N = 101
-    q = 33             
+    eps = 1e-4     
+    N = 201             
 
-    t = range(tmin, tmax, length=2*N)
+    t = range(tmin, tmax, length=N)
+    dt = t[2] - t[1]
     f = t -> besselj(0,t) + 1.0im*besselj(1,t)
 
-    @time ef = prony(f, tmin, tmax, eps; nsamples=N)
+    expo, coef = prony(f, tmin, tmax, N, eps)
+
+    @time ef = prony(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- f.(t))
-    @test norm(err) < eps*10.0
-    print("error = ", norm(err), "\n")
+    @test norm(err)/sqrt(N) < eps*2
+    print("error = ", norm(err)/sqrt(N))
+
+    @time ef = prony(f, tmin, tmax, dt, eps)
+    err = abs.(ef.(t) .- f.(t))
+    @test norm(err)/sqrt(N) < eps*2
+    print("error = ", norm(err)/sqrt(N))
 
 end

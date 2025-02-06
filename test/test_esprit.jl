@@ -1,4 +1,3 @@
-include("utils.jl")
 using Test
 using LinearAlgebra
 using ExpFit
@@ -15,9 +14,15 @@ using SpecialFunctions
     t = range(tmin, tmax, length=N)
     f = t -> besselj(0,t) + 1.0im*besselj(1,t)
 
-    @time ef = esprit(f, tmin, tmax, eps; nsamples=N)
+    @time ef = esprit(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- f.(t))
-    @test norm(err) < eps*10.0
+    @test norm(err)/sqrt(N) < eps
+    println("error: ", norm(err)/sqrt(N))
+
+    @time ef = expfit(f, tmin, tmax, N, eps; alg=ESPRIT())
+    err = abs.(ef.(t) .- f.(t))
+    @test norm(err)/sqrt(N) < eps
+    println("error: ", norm(err)/sqrt(N))
 
     """
     @time exponent, coeff = esprit(f, tmin, tmax, N, eps; cols=q)

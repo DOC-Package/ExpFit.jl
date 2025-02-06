@@ -13,10 +13,9 @@ function matrix_pencil_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; ncols::U
     R = Matrix(res.R) * transpose(res.P)
     
     # Determine the model order M by inspecting the diagonal of R.
-    # Find the first m (1 ≤ m ≤ L) for which |R[m+1, m+1]|/|R[1,1]| < eps.
     q = size(H, 2)
-    m_opt = findfirst(m -> abs(R[m + 1, m + 1]) / abs(R[1, 1]) < eps, 1:(q-1)) + 1
-    M = m_opt !== nothing ? m_opt + 1 : 1
+    M = findfirst(m -> abs(R[m + 1, m + 1]) / abs(R[1, 1]) < eps, 1:(q-1))
+    #M = m_opt !== nothing ? m_opt + 1 : 1
 
     # Form the sub-blocks (transposed) of R to construct the pencil.
     T0t = transpose(R[1:M, 1:q-1])
@@ -57,14 +56,15 @@ function matrix_pencil(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real; nc
     return ExponentialFitting(exponent, coeff)
 end
 
-
-"""
-    matrix_pencil_sub(func, tmin, tmax, K, eps; ncols) -> γ
-
-Perform the Matrix Pencil method using discrete data `hk` and the sampling interval defined by [tmin, tmax].
-"""
-function matrix_pencil(func::Function, tmin::Real, tmax::Real, eps::Real; nsamples::Int=500, ncols::Union{Int,Nothing}=nothing)
+function matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (nsamples - 1)
+    hk = [func(tmin + dt * (k - 1)) for k in 1:nsamples]
+    return matrix_pencil(hk, dt, eps; ncols=ncols)
+end
+
+function matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
+    @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
+    nsamples = Int(round((tmax-tmin)/dt)) + 1
     hk = [func(tmin + dt * (k - 1)) for k in 1:nsamples]
     return matrix_pencil(hk, dt, eps; ncols=ncols)
 end
@@ -75,14 +75,15 @@ function matrix_pencil(hk::AbstractVector{<:ComplexF64}, dt::Real, M::Int; ncols
     return ExponentialFitting(exponent, coeff)
 end
 
-
-"""
-    matrix_pencil_sub(func, tmin, tmax, K, eps; ncols) -> γ
-
-Perform the Matrix Pencil method using discrete data `hk` and the sampling interval defined by [tmin, tmax].
-"""
-function matrix_pencil(func::Function, tmin::Real, tmax::Real, M::Int; nsamples::Int=500, ncols::Union{Int,Nothing}=nothing)
+function matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; ncols::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (nsamples - 1)
+    hk = [func(tmin + dt * (k - 1)) for k in 1:nsamples]
+    return matrix_pencil(hk, dt, M; ncols=ncols)
+end
+
+function matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
+    @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
+    nsamples = Int(round((tmax-tmin)/dt)) + 1
     hk = [func(tmin + dt * (k - 1)) for k in 1:nsamples]
     return matrix_pencil(hk, dt, M; ncols=ncols)
 end
