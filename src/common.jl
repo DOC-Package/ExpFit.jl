@@ -37,7 +37,7 @@ end
 
 Construct a Hankel matrix from the discrete data `hk` (a vector of complex numbers).
 """
-function hankel_matrix(hk::AbstractVector{<:ComplexF64}; q::Union{Int,Nothing}=nothing) :: Matrix{ComplexF64}
+function hankel_matrix(hk::AbstractVector{<:Number}; q::Union{Int,Nothing}=nothing) :: Matrix{ComplexF64}
     K = length(hk)
     
     if iseven(K)

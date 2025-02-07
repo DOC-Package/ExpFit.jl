@@ -1,17 +1,18 @@
 abstract type AbstractExpFit <: Function end
-struct ExponentialFitting <: AbstractExpFit 
-    expon::Vector{ComplexF64}
-    coeff::Vector{ComplexF64}
+struct Exponentials <: AbstractExpFit 
+    expon::AbstractVector{ComplexF64}
+    coeff::AbstractVector{ComplexF64}
 end
 struct ESPRIT <: AbstractExpFit end
 struct MPencil <: AbstractExpFit end
 struct Prony <: AbstractExpFit end
+struct BalancedTruncation <: AbstractExpFit end
 
-function (ef::ExponentialFitting)(t::Real)
+function (ef::Exponentials)(t::Real)
     sum(ef.coeff .* exp.(-ef.expon .* t))
 end
 
-function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; alg::AbstractExpFit=ESPRIT()) :: ExponentialFitting
+function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; alg::AbstractExpFit=ESPRIT()) :: Exponentials
     if alg isa ESPRIT
         return esprit(func, tmin, tmax, nsamples, eps)
     elseif alg isa MPencil
@@ -23,17 +24,22 @@ function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real
     end
 end
 
-struct ExponentialReduction <: AbstractExpFit
-    expon::Vector{ComplexF64}
-    coeff::Vector{ComplexF64}
+function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; alg::AbstractExpFit=ESPRIT()) :: Exponentials
+    if alg isa ESPRIT
+        return esprit(func, tmin, tmax, nsamples, M)
+    elseif alg isa MPencil
+        return matrix_pencil(func, tmin, tmax, nsamples, M)
+    elseif alg isa Prony
+        return prony(func, tmin, tmax, nsamples, M)
+    else
+        throw(ArgumentError("Unknown algorithm: $alg"))
+    end
 end
-struct BalancedTruncation <: AbstractExpFit end
 
-function (ef::ExponentialReduction)(t::Real)
-    sum(ef.coeff .* exp.(-ef.expon .* t))
+function expred(a::AbstractVector{<:Number}, c::AbstractVector{<:Number}, eps::Real)
+    return balanced_truncation(a, c, eps)
 end
 
-
-function expred(exponent_init::AbstractVector{T}, coeff_init::AbstractVector{T}, eps::Real) where T<:ComplexF64
-   
+function expred(a::AbstractVector{<:Number}, c::AbstractVector{<:Number}, M::Int)
+    return balanced_truncation(a, c, M)
 end

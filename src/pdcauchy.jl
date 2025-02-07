@@ -1,3 +1,9 @@
+"""
+    pdcauchy(a, b, x, y)
+
+Compute the eigenvalues and eigenvectors of the Cauchy matrix defined by the vectors `a`, `b`, `x`, and `y`.
+"""
+
 function mytril(A::AbstractMatrix{T}) where T<:Number
     m, n = size(A)
     L = zeros(ComplexF64, m, n)

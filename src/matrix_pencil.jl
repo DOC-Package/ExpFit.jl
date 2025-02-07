@@ -4,7 +4,7 @@
 Estimate the eigenvalues γ using the Matrix Pencil method from the Hankel matrix
 constructed from the discrete data `hk`.
 """
-function matrix_pencil_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; ncols::Union{Int,Nothing}=nothing)
+function matrix_pencil_sub(hk::AbstractVector{<:Number}, eps::Real; ncols::Union{Int,Nothing}=nothing)
     # Construct the Hankel matrix.
     H = hankel_matrix(hk; q=ncols)
     
@@ -26,7 +26,7 @@ function matrix_pencil_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; ncols::U
     return γ
 end
 
-function matrix_pencil_sub(hk::AbstractVector{<:ComplexF64}, M::Int; ncols::Union{Int,Nothing}=nothing)
+function matrix_pencil_sub(hk::AbstractVector{<:Number}, M::Int; ncols::Union{Int,Nothing}=nothing)
     # Construct the Hankel matrix.
     H = hankel_matrix(hk; q=ncols)
     
@@ -50,10 +50,10 @@ end
 
 Perform the Matrix Pencil method using discrete data `hk` and the sampling interval defined by [tmin, tmax].
 """
-function matrix_pencil(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
+function matrix_pencil(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
     gamm = matrix_pencil_sub(hk, eps; ncols=ncols)
     exponent, coeff = solve_vandermonde(hk, gamm, dt)
-    return ExponentialFitting(exponent, coeff)
+    return Exponentials(exponent, coeff)
 end
 
 function matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
@@ -69,10 +69,10 @@ function matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Re
     return matrix_pencil(hk, dt, eps; ncols=ncols)
 end
 
-function matrix_pencil(hk::AbstractVector{<:ComplexF64}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
+function matrix_pencil(hk::AbstractVector{<:Number}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
     gamm = matrix_pencil_sub(hk, M; ncols=ncols)
     exponent, coeff = solve_vandermonde(hk, gamm, dt)
-    return ExponentialFitting(exponent, coeff)
+    return Exponentials(exponent, coeff)
 end
 
 function matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; ncols::Union{Int,Nothing}=nothing)

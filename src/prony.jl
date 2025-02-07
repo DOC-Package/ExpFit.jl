@@ -6,7 +6,7 @@ Returns the vector of singular values `sv`, the matrix `Uz`,
 and the norm of the difference between A and Uz*S*Uz^T.
 """
 
-function takagi_factor(A::AbstractMatrix{T}; err::Bool=false) where T<:ComplexF64
+function takagi_factor(A::AbstractMatrix{T}; err::Bool=false) where T<:Number
     
     n = size(A, 1)
     # check A is symmetric
@@ -35,7 +35,7 @@ function takagi_factor(A::AbstractMatrix{T}; err::Bool=false) where T<:ComplexF6
 end
 
 
-function prony_sub(hk::Vector{ComplexF64}, eps::Float64)
+function prony_sub(hk::AbstractVector{<:Number}, eps::Float64)
 
     H = hankel_matrix(hk)
     
@@ -53,7 +53,7 @@ function prony_sub(hk::Vector{ComplexF64}, eps::Float64)
     return γ
 end
 
-function prony_sub(hk::Vector{ComplexF64}, M::Int)
+function prony_sub(hk::AbstractVector{<:Number}, M::Int)
 
     H = hankel_matrix(hk)
     
@@ -75,10 +75,10 @@ end
 Estimate the exponents and coefficients of the Prony series for the function `func`.    
 """
 
-function prony(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real)
+function prony(hk::AbstractVector{<:Number}, dt::Real, eps::Real)
     gamm = prony_sub(hk, eps)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
-    return ExponentialFitting(expon, coeff)
+    return Exponentials(expon, coeff)
 end
 
 function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, eps::Float64)
@@ -95,10 +95,10 @@ function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, eps::Floa
     return prony(hk, dt, eps)
 end
 
-function prony(hk::AbstractVector{<:ComplexF64}, dt::Real, M::Int)
+function prony(hk::AbstractVector{<:Number}, dt::Real, M::Int)
     gamm = prony_sub(hk, M)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
-    return ExponentialFitting(expon, coeff)
+    return Exponentials(expon, coeff)
 end
 
 function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, M::Int)

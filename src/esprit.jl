@@ -4,7 +4,7 @@
 Estimate the eigenvalues γ using the ESPRIT subspace method from the Hankel matrix
 constructed from `hk`.
 """
-function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; ncols::Union{Int,Nothing}=nothing)
+function esprit_sub(hk::AbstractVector{<:Number}, eps::Real; ncols::Union{Int,Nothing}=nothing)
     # Hankel matrix construction.
     H = hankel_matrix(hk; q=ncols)
 
@@ -25,7 +25,7 @@ function esprit_sub(hk::AbstractVector{<:ComplexF64}, eps::Real; ncols::Union{In
     return γ
 end
 
-function esprit_sub(hk::AbstractVector{<:ComplexF64}, M::Int; ncols::Union{Int,Nothing}=nothing)
+function esprit_sub(hk::AbstractVector{<:Number}, M::Int; ncols::Union{Int,Nothing}=nothing)
     # Hankel matrix construction.
     H = hankel_matrix(hk; q=ncols)
 
@@ -48,10 +48,10 @@ end
 
 Perform the ESPRIT algorithm using discrete data `hk` and the sampling interval `dt`.
 """
-function esprit(hk::AbstractVector{<:ComplexF64}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
+function esprit(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
     gamm = esprit_sub(hk, eps; ncols=ncols)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
-    return ExponentialFitting(expon, coeff)
+    return Exponentials(expon, coeff)
 end
 
 function esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
@@ -67,10 +67,10 @@ function esprit(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real; nco
     return esprit(hk, dt, eps; ncols=ncols)
 end
 
-function esprit(hk::AbstractVector{<:ComplexF64}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
+function esprit(hk::AbstractVector{<:Number}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
     gamm = esprit_sub(hk, M; ncols=ncols)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
-    return ExponentialFitting(expon, coeff)
+    return Exponentials(expon, coeff)
 end
 
 function esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; ncols::Union{Int,Nothing}=nothing)
