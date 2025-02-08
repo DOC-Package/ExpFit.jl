@@ -28,7 +28,6 @@ end
 
 Given the exponents `a` and coefficients `c` of an exponential fitting, compute a new exponential fitting with a reduced number of terms.
 """
-
 function balanced_truncation(a::Vector{T}, c::Vector{T}, eps::Float64) where T<:Number
     sv, U = coneig(sqrt.(c), sqrt.(conj.(c)), a, conj.(a))
     M = findfirst(i -> 2 * sum(sv[i+1:end]) < eps, 1:length(sv))

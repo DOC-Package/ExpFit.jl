@@ -13,7 +13,7 @@ function esprit_sub(hk::AbstractVector{<:Number}, eps::Real; ncols::Union{Int,No
     sv = svd_res.S
     V  = svd_res.V'
     
-    # Determine the model order M as the number of singular values greater than eps * (largest singular value)
+    # Determine the model order M 
     M = count(>(eps * sv[1]), sv)
     
     q = size(H, 2)

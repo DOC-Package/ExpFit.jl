@@ -1,7 +1,7 @@
 """
     solve_vandermonde()
 
-Solve the Vandermode system
+Solve the overdetermined Vandermode system
 """
 
 function solve_vandermonde(
@@ -22,7 +22,7 @@ function solve_vandermonde(
 
     # Exponents
     exponent = Vector{ComplexF64}(undef, M)
-    exponent = [-log(γ[m]) / dt for m in 1:M]
+    exponent .= -log.(γ) ./ dt
     
     # Sort by magnitude
     idx = sortperm(coeff, by = x -> abs(x), rev=true)
