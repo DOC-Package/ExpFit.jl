@@ -8,8 +8,8 @@ struct MPencil <: AbstractExpFit end
 struct Prony <: AbstractExpFit end
 struct BalancedTruncation <: AbstractExpFit end
 
-function (ef::Exponentials)(t::Real)
-    sum(ef.coeff .* exp.(-ef.expon .* t))
+function (ef::Exponentials)(t::Real, t0::Real=0.0)
+    sum(ef.coeff .* exp.(-ef.expon .* (t-t0)))
 end
 
 function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; alg::AbstractExpFit=ESPRIT()) :: Exponentials

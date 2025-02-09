@@ -116,3 +116,34 @@ function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, M::Int)
 end
 
 
+function prony2(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
+    
+    dt = (tmax - tmin) / (nsamples - 1)
+    hk = [func(tmin + dt * (k-1)) for k in 1:nsamples]
+
+    H = hankel_matrix(hk[1:nsamples-1]; q=ncols)  # Note that this is the shifted Hankel matrix
+    nrows, ncols = size(H)
+    println("H ", size(H))
+
+    hm = [hk[m + ncols - 1] for m in 1:nrows]
+    q = pinv(H) * hm
+    
+    push!(q, 1.0)
+    println("q ", size(q))
+    roots = AMRVW.roots(q)
+    println("roots ", size(roots))
+    roots = sort(roots, by = x -> abs(x), rev=true)
+    println("roots ", abs.(roots))
+    γ = roots[1:ncols]
+
+    coeff = solve_vandermonde!(hk, γ)
+
+    M = ncols - count(x -> abs(x) < eps, coeff)
+    println("M = $M")
+    println("coeff", abs.(coeff))
+
+    γ = γ[1:M]
+    exponent, coeff = solve_vandermonde(hk, γ, dt)
+
+    return Exponentials(exponent, coeff)
+end
