@@ -1,5 +1,8 @@
-## Exponential Fitting
+# Exponential Fitting
 
+## Simple usage
+
+## Algorithms
 ### ESPRIT
 
 ### Matrix pencil
