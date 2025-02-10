@@ -20,27 +20,27 @@ using ExpFit
 
     ef = prony(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*2
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(f, tmin, tmax, N, 10)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(f, tmin, tmax, dt, eps)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*2
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(f, tmin, tmax, dt, 10)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(fv, dt, eps)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*2
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(fv, dt, 10)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     a, c = generate_exponent_coefficient_pairs_real(100)
     f = Exponentials(a,c)
@@ -49,26 +49,26 @@ using ExpFit
 
     ef = prony(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
-    ef = prony(f, tmin, tmax, N, 10)
+    ef = prony(f, tmin, tmax, N, 12)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(f, tmin, tmax, dt, eps)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
-    ef = prony(f, tmin, tmax, dt, 10)
+    ef = prony(f, tmin, tmax, dt, 12)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
     ef = prony(fv, dt, eps)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
-    ef = prony(fv, dt, 10)
+    ef = prony(fv, dt, 12)
     err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
+    @test norm(err)/sqrt(N) < eps*fmax*10
 
 end

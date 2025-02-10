@@ -42,7 +42,7 @@ function prony_sub(hk::AbstractVector{<:Number}, eps::Float64)
     # Takagi factorization
     sv, U = takagi_factor(H)
     # Determine the model order M
-    M = count(>(eps * sv[1]), sv) 
+    M = count(>(eps * sv[1]), sv) + 1
     
     # Roots
     uv = conj(U[:, M])
