@@ -2,7 +2,7 @@
 
 julia_version = "1.11.3"
 manifest_format = "2.0"
-project_hash = "271131619b31f2e3856bd41c9ec3425c9d06a94a"
+project_hash = "3d3732558e48d98063a75ad495c037b04834befa"
 
 [[deps.AMRVW]]
 deps = ["LinearAlgebra", "Random"]

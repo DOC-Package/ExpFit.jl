@@ -76,6 +76,11 @@ Estimate the exponents and coefficients of the Prony series for the function `fu
 """
 
 function prony(hk::AbstractVector{<:Number}, dt::Real, eps::Real)
+    # Remove the last element if the number of samples is even
+    if iseven(length(hk))
+        hk = hk[1:end-1]
+        println("nsamples must be odd for Prony method, removing the last element")
+    end
     gamm = prony_sub(hk, eps)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
     return Exponentials(expon, coeff)
@@ -103,6 +108,10 @@ function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, eps::Floa
 end
 
 function prony(hk::AbstractVector{<:Number}, dt::Real, M::Int)
+    if iseven(length(hk))
+        hk = hk[1:end-1]
+        println("nsamples must be odd for Prony method, removing the last element")
+    end
     gamm = prony_sub(hk, M)
     expon, coeff = solve_vandermonde(hk, gamm, dt)
     return Exponentials(expon, coeff)

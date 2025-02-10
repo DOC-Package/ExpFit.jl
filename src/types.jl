@@ -1,7 +1,7 @@
 abstract type AbstractExpFit <: Function end
 struct Exponentials <: AbstractExpFit 
-    expon::AbstractVector{ComplexF64}
-    coeff::AbstractVector{ComplexF64}
+    expon::AbstractVector{<:Number}
+    coeff::AbstractVector{<:Number}
 end
 struct ESPRIT <: AbstractExpFit end
 struct Pencil <: AbstractExpFit end

@@ -5,8 +5,8 @@ Solve the overdetermined Vandermode system
 """
 
 function solve_vandermonde(
-    hk::Vector{ComplexF64},
-    γ::Vector{ComplexF64},
+    hk::Vector{<:Number},
+    γ::Vector{<:Number},
     dt::Float64
 )
     

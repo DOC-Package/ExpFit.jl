@@ -15,3 +15,14 @@ function generate_exponent_coefficient_pairs(n::Int)
     end
     return exponents, coefficients
 end
+
+function generate_exponent_coefficient_pairs_real(n::Int)
+    Random.seed!(1234)
+    exponents = Vector{Float64}(undef, n)
+    coefficients = Vector{Float64}(undef, n)
+    for i in 1:n
+        exponents[i] = rand() * 9.9 + 0.1
+        coefficients[i] = randn()
+    end
+    return exponents, coefficients
+end
