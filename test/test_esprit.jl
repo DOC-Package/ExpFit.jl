@@ -1,28 +1,29 @@
+include("ftest.jl")
 using Test
 using LinearAlgebra
 using ExpFit
-using SpecialFunctions
 
 @testset "esprit.jl" begin 
 
     tmin = 0.0
-    tmax  = 50.0      
+    tmax  = 20.0      
     eps = 1e-4     
     N = 100
     q = 33             
 
     t = range(tmin, tmax, length=N)
-    f = t -> besselj(0,t) + 1.0im*besselj(1,t)
+    a, c = generate_exponent_coefficient_pairs(100)
+    f = Exponentials(a,c)
 
-    @time ef = esprit(f, tmin, tmax, N, eps)
+    ef = esprit(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- f.(t))
     @test norm(err)/sqrt(N) < eps
-    println("error: ", norm(err)/sqrt(N))
+    #println("error: ", norm(err)/sqrt(N))
 
-    @time ef = expfit(f, tmin, tmax, N, eps; alg=ESPRIT())
+    ef = expfit(f, tmin, tmax, N, eps; alg=ESPRIT())
     err = abs.(ef.(t) .- f.(t))
     @test norm(err)/sqrt(N) < eps
-    println("error: ", norm(err)/sqrt(N))
+    #println("error: ", norm(err)/sqrt(N))
 
     """
     @time exponent, coeff = esprit(f, tmin, tmax, N, eps; cols=q)

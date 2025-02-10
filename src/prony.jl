@@ -82,7 +82,10 @@ function prony(hk::AbstractVector{<:Number}, dt::Real, eps::Real)
 end
 
 function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, eps::Float64)
-    @assert isodd(nsamples) "nsamples must be odd"
+    if iseven(nsamples)
+        nsamples += 1
+        println("nsamples must be odd for Prony method, adding 1")
+    end
     dt = (tmax-tmin) / (nsamples-1)
     hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
     return prony(hk, dt, eps)
@@ -91,6 +94,10 @@ end
 function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, eps::Float64)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
+    if iseven(nsamples)
+        nsamples += 1
+        println("nsamples must be odd for Prony method, adding 1")
+    end
     hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
     return prony(hk, dt, eps)
 end
@@ -102,7 +109,10 @@ function prony(hk::AbstractVector{<:Number}, dt::Real, M::Int)
 end
 
 function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, M::Int)
-    @assert isodd(nsamples) "nsamples must be odd for Prony method"
+    if iseven(nsamples)
+        nsamples += 1
+        println("nsamples must be odd for Prony method, adding 1")
+    end
     dt = (tmax-tmin) / (nsamples-1)
     hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
     return prony(hk, dt, M)
@@ -111,39 +121,10 @@ end
 function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, M::Int)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
+    if iseven(nsamples)
+        nsamples += 1
+        println("nsamples must be odd for Prony method, adding 1")
+    end
     hk = [func(dt * (k-1) + tmin) for k in 1:nsamples]
     return prony(hk, dt, M)
-end
-
-
-function prony2(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
-    
-    dt = (tmax - tmin) / (nsamples - 1)
-    hk = [func(tmin + dt * (k-1)) for k in 1:nsamples]
-
-    H = hankel_matrix(hk[1:nsamples-1]; q=ncols)  # Note that this is the shifted Hankel matrix
-    nrows, ncols = size(H)
-    println("H ", size(H))
-
-    hm = [hk[m + ncols - 1] for m in 1:nrows]
-    q = pinv(H) * hm
-    
-    push!(q, 1.0)
-    println("q ", size(q))
-    roots = AMRVW.roots(q)
-    println("roots ", size(roots))
-    roots = sort(roots, by = x -> abs(x), rev=true)
-    println("roots ", abs.(roots))
-    γ = roots[1:ncols]
-
-    coeff = solve_vandermonde!(hk, γ)
-
-    M = ncols - count(x -> abs(x) < eps, coeff)
-    println("M = $M")
-    println("coeff", abs.(coeff))
-
-    γ = γ[1:M]
-    exponent, coeff = solve_vandermonde(hk, γ, dt)
-
-    return Exponentials(exponent, coeff)
 end

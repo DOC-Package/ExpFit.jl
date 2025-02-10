@@ -1,5 +1,5 @@
-# Exponential Model Reduction 
+## Exponential Model Reduction 
 
-## Balanced trunction
+### Balanced trunction
 
 

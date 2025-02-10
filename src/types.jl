@@ -4,7 +4,7 @@ struct Exponentials <: AbstractExpFit
     coeff::AbstractVector{ComplexF64}
 end
 struct ESPRIT <: AbstractExpFit end
-struct MPencil <: AbstractExpFit end
+struct Pencil <: AbstractExpFit end
 struct Prony <: AbstractExpFit end
 struct BalancedTruncation <: AbstractExpFit end
 
@@ -15,7 +15,7 @@ end
 function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; alg::AbstractExpFit=ESPRIT()) :: Exponentials
     if alg isa ESPRIT
         return esprit(func, tmin, tmax, nsamples, eps)
-    elseif alg isa MPencil
+    elseif alg isa Pencil
         return matrix_pencil(func, tmin, tmax, nsamples, eps)
     elseif alg isa Prony
         return prony(func, tmin, tmax, nsamples, eps)
@@ -24,10 +24,22 @@ function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real
     end
 end
 
+function expfit(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real; alg::AbstractExpFit=ESPRIT()) :: Exponentials
+    if alg isa ESPRIT
+        return esprit(func, tmin, tmax, dt, eps)
+    elseif alg isa Pencil
+        return matrix_pencil(func, tmin, tmax, dt, eps)
+    elseif alg isa Prony
+        return prony(func, tmin, tmax, dt, eps)
+    else
+        throw(ArgumentError("Unknown algorithm: $alg"))
+    end
+end
+
 function expfit(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; alg::AbstractExpFit=ESPRIT()) :: Exponentials
     if alg isa ESPRIT
         return esprit(func, tmin, tmax, nsamples, M)
-    elseif alg isa MPencil
+    elseif alg isa Pencil
         return matrix_pencil(func, tmin, tmax, nsamples, M)
     elseif alg isa Prony
         return prony(func, tmin, tmax, nsamples, M)

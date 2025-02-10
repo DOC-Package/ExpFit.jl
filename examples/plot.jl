@@ -2,11 +2,10 @@ using QFiND
 using CairoMakie
 using LaTeXStrings 
 
-
-function plot(t::AbstractVector{<:Real},
-                  exact::AbstractVector{ComplexF64},
-                  approx::AbstractVector{ComplexF64},
-                  err::AbstractVector{ComplexF64})
+function plot_res(t::AbstractVector{<:Real},
+                  exact::AbstractVector{<:Number},
+                  approx::AbstractVector{<:Number},
+                  err::AbstractVector{<:Number})
     # Style parameters (matching Python style)
     ls1    = 20      # label font size
     ls2    = 15      # tick label font size
@@ -74,7 +73,7 @@ function plot(t::AbstractVector{<:Real},
     axislegend(ax1, position = :rt, labelsize = ls2)
 
     # Save the figure as a PNG file.
-    save("bcf.png", fig)
+    save("result.png", fig)
 
     return fig
 end
