@@ -1,6 +1,6 @@
 module ExpFit
 
-export Exponentials, ESPRIT, MPencil, Prony
+export Exponentials, ESPRIT, Pencil, Prony, ESPIRA1, ESPIRA2, FastESPRIT
 export prony, prony2, matrix_pencil, esprit, espira1, espira2, fast_esprit
 export expfit, expred
 export coneig

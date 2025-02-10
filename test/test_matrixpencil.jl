@@ -1,59 +1,83 @@
+include("ftest.jl")
 using Test
 using LinearAlgebra
 using ExpFit
-using SpecialFunctions
 
 @testset "matrix_pencil.jl" begin 
 
     tmin = 0.0
-    tmax  = 50.0      
-    eps = 1e-4     
-    N = 100
-    q = 33             
+    tmax  = 20.0      
+    eps = 1e-4    
+    N = 100             
+    ncols = N÷3
 
     t = range(tmin, tmax, length=N)
-    f = t -> besselj(0,t) + 1.0im*besselj(1,t)
-
-    
-    @time ef = matrix_pencil(f, tmin, tmax, N, eps)
-    err = abs.(ef.(t) .- f.(t))
-    @test norm(err)/sqrt(N) < eps
-    print("error = ", norm(err)/sqrt(N), "\n")
-    
-    """
-    @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps; q=q)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
-    @test norm(err) < eps*10.0
-    
-    f = t -> besselj(2,t) + 1.0im*besselj(3,t)
     dt = t[2] - t[1]
-    f_disc = [f(ti) for ti in t]
-    @time exponent, coeff = matrix_pencil(f_disc, dt, eps)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
-    @test norm(err) < eps*10.0
 
-    tmin = 0.0
-    tmax  = 50.0      
-    eps = 1e-4     
-    N = 105
-    q = 35             
+    a, c = generate_exponent_coefficient_pairs(100)
+    f = Exponentials(a,c)
+    fv = f.(t)
+    fmax = maximum(abs.(fv))
 
-    t = range(tmin, tmax, length=N)
-    f = t -> besselj(0,t) + 1.0im*besselj(1,t)
+    ef = matrix_pencil(f, tmin, tmax, N, eps)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+    
+    ef = matrix_pencil(f, tmin, tmax, N, 9)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
 
-    @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
-    @test norm(err) < eps*10.0
+    ef = matrix_pencil(f, tmin, tmax, dt, eps)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
 
-    @time exponent, coeff = matrix_pencil(f, tmin, tmax, N, eps; q=q)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
-    @test norm(err) < eps*10.0
+    ef = matrix_pencil(f, tmin, tmax, dt, 9)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
 
-    f = t -> besselj(2,t) + 1.0im*besselj(3,t)
-    dt = t[2] - t[1]
-    f_disc = [f(ti) for ti in t]
-    @time exponent, coeff = matrix_pencil(f_disc, dt, eps)
-    err = [abs(sumexp(ti,exponent,coeff) - f(ti)) for ti in t]
-    @test norm(err) < eps*10.0
-    """
+    ef = matrix_pencil(fv, dt, eps)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(fv, dt, 9)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(fv, dt, eps; ncols=ncols)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    a, c = generate_exponent_coefficient_pairs_real(100)
+    f = Exponentials(a,c)
+    fv = f.(t)
+    fmax = maximum(abs.(fv))
+
+    ef = matrix_pencil(f, tmin, tmax, N, eps)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(f, tmin, tmax, N, 9)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(f, tmin, tmax, dt, eps)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(f, tmin, tmax, dt, 9)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(fv, dt, eps)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(fv, dt, 9)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+
+    ef = matrix_pencil(fv, dt, eps; ncols=ncols)
+    err = abs.(ef.(t) .- fv)
+    @test norm(err)/sqrt(N) < eps*fmax
+    
 end

@@ -76,7 +76,6 @@ Estimate the exponents and coefficients of the Prony series for the function `fu
 """
 
 function prony(hk::AbstractVector{<:Number}, dt::Real, eps::Real)
-    # Remove the last element if the number of samples is even
     if iseven(length(hk))
         hk = hk[1:end-1]
         println("nsamples must be odd for Prony method, removing the last element")

@@ -10,16 +10,15 @@ function matrix_pencil_sub(hk::AbstractVector{<:Number}, eps::Real; ncols::Union
     
     # Perform QR decomposition with column pivoting.
     res = qr(H, ColumnNorm())
-    R = Matrix(res.R) * transpose(res.P)
+    S = Matrix(res.R) * transpose(res.P)
     
     # Determine the model order M by inspecting the diagonal of R.
     q = size(H, 2)
-    M = findfirst(m -> abs(R[m + 1, m + 1]) / abs(R[1, 1]) < eps, 1:(q-1))
-    #M = m_opt !== nothing ? m_opt + 1 : 1
-
+    M = findfirst(m -> abs(res.R[m + 1, m + 1]) / abs(res.R[1, 1]) < eps, 1:(q-1))
+    
     # Form the sub-blocks (transposed) of R to construct the pencil.
-    T0t = transpose(R[1:M, 1:q-1])
-    T1t = transpose(R[1:M, 2:q])
+    T0t = transpose(S[1:M, 1:q-1])
+    T1t = transpose(S[1:M, 2:q])
     FM = pinv(T0t) * T1t
     γ = eigvals(FM)
 
@@ -32,12 +31,12 @@ function matrix_pencil_sub(hk::AbstractVector{<:Number}, M::Int; ncols::Union{In
     
     # Perform QR decomposition with column pivoting.
     res = qr(H, ColumnNorm())
-    R = Matrix(res.R) * transpose(res.P)
+    S = Matrix(res.R) * transpose(res.P)
     
     q = size(H, 2)
     # Form the sub-blocks (transposed) of R to construct the pencil.
-    T0t = transpose(R[1:M, 1:q-1])
-    T1t = transpose(R[1:M, 2:q])
+    T0t = transpose(S[1:M, 1:q-1])
+    T1t = transpose(S[1:M, 2:q])
     FM = pinv(T0t) * T1t
     γ = eigvals(FM)
 

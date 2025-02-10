@@ -3,13 +3,12 @@ using Test
 using LinearAlgebra
 using ExpFit
 
-@testset "esprit.jl" begin 
+@testset "espira2.jl" begin 
 
     tmin = 0.0
     tmax  = 20.0      
     eps = 1e-4    
     N = 100             
-    ncols = N÷3
 
     t = range(tmin, tmax, length=N)
     dt = t[2] - t[1]
@@ -19,31 +18,27 @@ using ExpFit
     fv = f.(t)
     fmax = maximum(abs.(fv))
 
-    ef = esprit(f, tmin, tmax, N, eps)
+    ef = espira2(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(f, tmin, tmax, N, 9)
+    ef = espira2(f, tmin, tmax, N, 9)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(f, tmin, tmax, dt, eps)
+    ef = espira2(f, tmin, tmax, dt, eps)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(f, tmin, tmax, dt, 9)
+    ef = espira2(f, tmin, tmax, dt, 9)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(fv, dt, eps)
+    ef = espira2(fv, dt, eps)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(fv, dt, 9)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
-
-    ef = esprit(fv, dt, eps; ncols=ncols)
+    ef = espira2(fv, dt, 9)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
@@ -52,31 +47,27 @@ using ExpFit
     fv = f.(t)
     fmax = maximum(abs.(fv))
 
-    ef = esprit(f, tmin, tmax, N, eps)
+    ef = espira2(f, tmin, tmax, N, eps)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(f, tmin, tmax, N, 9)
+    ef = espira2(f, tmin, tmax, N, 9)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(f, tmin, tmax, dt, eps)
+    ef = espira2(f, tmin, tmax, dt, eps)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(f, tmin, tmax, dt, 9)
+    ef = espira2(f, tmin, tmax, dt, 9)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(fv, dt, eps)
+    ef = espira2(fv, dt, eps)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
-    ef = esprit(fv, dt, 9)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax
-
-    ef = esprit(fv, dt, eps; ncols=ncols)
+    ef = espira2(fv, dt, 9)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax
 
