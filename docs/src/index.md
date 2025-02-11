@@ -2,13 +2,8 @@
 CurrentModule = ExpFit
 ```
 
-# ExpFit
+# ExpFit.jl
 
 Documentation for [ExpFit](https://github.com/htkhsh/ExpFit.jl).
 
-```@index
-```
 
-```@autodocs
-Modules = [ExpFit]
-```

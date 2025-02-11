@@ -22,6 +22,7 @@ makedocs(;
         "Home" => "index.md",
         "Exponential Fitting" => "expfit.md",
         "Exponential Reduction" => "expred.md",
+        "References" => "reference.md",
     ],
     draft=get(ENV, "CI", "false") == "false",
     #plugins=[bib]
