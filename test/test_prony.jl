@@ -51,7 +51,7 @@ using ExpFit
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
-    ef = prony(f, tmin, tmax, N, 12)
+    ef = prony(f, tmin, tmax, N, 14)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
@@ -59,7 +59,7 @@ using ExpFit
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
-    ef = prony(f, tmin, tmax, dt, 12)
+    ef = prony(f, tmin, tmax, dt, 14)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
@@ -67,7 +67,7 @@ using ExpFit
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
-    ef = prony(fv, dt, 12)
+    ef = prony(fv, dt, 14)
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
