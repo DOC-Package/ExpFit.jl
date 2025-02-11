@@ -1,9 +1,3 @@
-"""
-    matrix_pencil_sub(hk, eps; ncols) -> γ
-
-Estimate the eigenvalues γ using the Matrix Pencil method from the Hankel matrix
-constructed from the discrete data `hk`.
-"""
 function matrix_pencil_sub(hk::AbstractVector{<:Number}, eps::Real; ncols::Union{Int,Nothing}=nothing)
     # Construct the Hankel matrix.
     H = hankel_matrix(hk; q=ncols)
@@ -43,11 +37,10 @@ function matrix_pencil_sub(hk::AbstractVector{<:Number}, M::Int; ncols::Union{In
     return γ
 end
 
-
-"""
-    matrix_pencil_sub(hk, dt, eps; ncols) -> γ
-
-Perform the Matrix Pencil method using discrete data `hk` and the sampling interval defined by [tmin, tmax].
+""" 
+    matrix_pencil(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing) :: Exponentials
+    
+Perform the matrix pencil algorithm using discrete data `hk` and the sampling interval `dt` for a given tolerance `eps`.
 """
 function matrix_pencil(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
     gamm = matrix_pencil_sub(hk, eps; ncols=ncols)
@@ -55,12 +48,22 @@ function matrix_pencil(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols:
     return Exponentials(exponent, coeff)
 end
 
+"""
+    matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
+
+Perform the matrix pencil algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given tolerance `eps`.
+"""
 function matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (nsamples - 1)
     hk = [func(tmin + dt * (k - 1)) for k in 1:nsamples]
     return matrix_pencil(hk, dt, eps; ncols=ncols)
 end
 
+"""
+    matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing) :: Exponentials
+
+Perform the matrix pencil algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given tolerance `eps`.
+"""
 function matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
@@ -68,18 +71,33 @@ function matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Re
     return matrix_pencil(hk, dt, eps; ncols=ncols)
 end
 
+"""
+    matrix_pencil(hk::Vector{<:Number}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing) :: Exponentials
+
+Perform the matrix pencil algorithm using discrete data `hk` and the sampling interval `dt` for a given model order `M`.
+"""
 function matrix_pencil(hk::AbstractVector{<:Number}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
     gamm = matrix_pencil_sub(hk, M; ncols=ncols)
     exponent, coeff = solve_vandermonde(hk, gamm, dt)
     return Exponentials(exponent, coeff)
 end
 
+"""
+    matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; ncols::Union{Int,Nothing}=nothing) :: Exponentials
+
+Perform the matrix pencil algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given model order `M`.
+"""
 function matrix_pencil(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; ncols::Union{Int,Nothing}=nothing)
     dt = (tmax - tmin) / (nsamples - 1)
     hk = [func(tmin + dt * (k - 1)) for k in 1:nsamples]
     return matrix_pencil(hk, dt, M; ncols=ncols)
 end
 
+"""
+    matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing) :: Exponentials
+
+Perform the matrix pencil algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given model order `M`.
+"""
 function matrix_pencil(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1

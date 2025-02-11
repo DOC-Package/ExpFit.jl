@@ -1,9 +1,3 @@
-"""
-    pdcauchy(a, b, x, y)
-
-Compute the eigenvalues and eigenvectors of the Cauchy matrix defined by the vectors `a`, `b`, `x`, and `y`.
-"""
-
 function mytril(A::AbstractMatrix{T}) where T<:Number
     m, n = size(A)
     L = zeros(ComplexF64, m, n)
@@ -54,7 +48,7 @@ function partial_cholesky!(a::AbstractVector{T}, b::AbstractVector{T}, x::Abstra
     return L, D, P
 end
 
-function coneig_rrd(X::Matrix{T}, D::Matrix{T}) where T<:Number
+function coneig_rrd(X::AbstractMatrix{T}, D::AbstractMatrix{T}) where T<:Number
     m = size(X, 1)
     G = D * (transpose(X) * (X * D))
     
@@ -81,7 +75,7 @@ function coneig_rrd(X::Matrix{T}, D::Matrix{T}) where T<:Number
     return s, U
 end
 
-function coneig(a::Vector{T}, b::Vector{T}, x::Vector{T}, y::Vector{T}) where T<:Number
+function coneig(a::AbstractVector{T}, b::AbstractVector{T}, x::AbstractVector{T}, y::AbstractVector{T}) where T<:Number
     L, D, P = partial_cholesky!(map(copy, (a, b, x, y))...)
     Xt = P * L
     s, U = coneig_rrd(Xt, D)

@@ -1,9 +1,3 @@
-"""
-    fast_esprit_sub(hk, eps; p=nothing)
-
-Estimate the eigenvalues γ using the ESPRIT subspace method from the Hankel matrix
-constructed from `hk`.
-"""
 function fast_esprit_sub(hk::AbstractVector{<:Number}, eps::Real; ncols::Union{Int,Nothing}=nothing)
     # Hankel matrix construction.
     H = hankel_matrix(hk; q=ncols)
@@ -36,11 +30,10 @@ function fast_esprit_sub(hk::AbstractVector{<:Number}, M::Int; ncols::Union{Int,
     return γ
 end
 
-
 """
-    fast_esprit(hk, dt, eps; ncols=nothing) -> exponent, coeff
+    fast_esprit(hk::Vector{<:Number}, dt::Real, eps::Real) :: Exponentials
 
-Perform the ESPRIT algorithm using discrete data `hk` and the sampling interval `dt`.
+Perform the Fast ESPRIT algorithm using discrete data `hk` and the sampling interval `dt` for a given tolerance `eps`.
 """
 function fast_esprit(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
     if iseven(length(hk))
@@ -52,6 +45,11 @@ function fast_esprit(hk::AbstractVector{<:Number}, dt::Real, eps::Real; ncols::U
     return Exponentials(expon, coeff)
 end
 
+"""
+    fast_esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real) :: Exponentials
+
+Perform the Fast ESPRIT algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given tolerance `eps`.
+"""
 function fast_esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real; ncols::Union{Int,Nothing}=nothing)
     if iseven(nsamples)
         nsamples += 1
@@ -62,6 +60,11 @@ function fast_esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps:
     return fast_esprit(hk, dt, eps; ncols=ncols)
 end
 
+"""
+    fast_esprit(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real) :: Exponentials
+
+Perform the Fast ESPRIT algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given tolerance `eps`.
+"""
 function fast_esprit(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real; ncols::Union{Int,Nothing}=nothing)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
@@ -73,6 +76,11 @@ function fast_esprit(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real
     return fast_esprit(hk, dt, eps; ncols=ncols)
 end
 
+"""
+    fast_esprit(hk::Vector{<:Number}, dt::Real, M::Int) :: Exponentials
+
+Perform the Fast ESPRIT algorithm using discrete data `hk` and the sampling interval `dt` for a given model order `M`.
+"""
 function fast_esprit(hk::AbstractVector{<:Number}, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
     if iseven(length(hk))
         hk = hk[1:end-1]
@@ -83,6 +91,11 @@ function fast_esprit(hk::AbstractVector{<:Number}, dt::Real, M::Int; ncols::Unio
     return Exponentials(expon, coeff)
 end
 
+"""
+    fast_esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int) :: Exponentials
+
+Perform the Fast ESPRIT algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given model order `M`.
+"""
 function fast_esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int; ncols::Union{Int,Nothing}=nothing)
     if iseven(nsamples)
         nsamples += 1
@@ -93,6 +106,11 @@ function fast_esprit(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::I
     return fast_esprit(hk, dt, M; ncols=ncols)
 end
 
+""" 
+    fast_esprit(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int) :: Exponentials
+
+Perform the Fast ESPRIT algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given model order `M`.
+"""
 function fast_esprit(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int; ncols::Union{Int,Nothing}=nothing)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1

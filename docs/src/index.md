@@ -4,6 +4,14 @@ CurrentModule = ExpFit
 
 # ExpFit.jl
 
-Documentation for [ExpFit](https://github.com/htkhsh/ExpFit.jl).
+[ExpFit.jl](https://github.com/htkhsh/ExpFit.jl) is a Julia package that provides methods and algorithms for fitting functions or discrete data with a sum of exponentials and for reducing the order of a sum of exponentials.
+
+## Index
+
+- [Exponential Fitting](@ref)
+- [Exponential Model Reduction](@ref)
+- [Reference](@ref)
+
+
 
 

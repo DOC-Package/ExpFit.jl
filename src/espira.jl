@@ -1,11 +1,9 @@
 """
-    espira1
+    espira1(f::Vector{<:Number}, dt::Real, eps::Real) :: Exponentials
 
-This function first computes a modified FFT of y and places knots on the unit circle.
-It then calls the AAA routine from RationalFunctionApproximation.jl to obtain a
-rational approximant of (modified) DFT data, and finally extracts the ESPIRA parameters via a partial-fraction procedure.
+Perform the ESPIRA-I algorithm using discrete data `f` and the sampling interval `dt` for a given tolerance `eps`.
 """
-function espira1(f::Vector{<:Number}, dt::Real, eps::Real)
+function espira1(f::AbstractVector{<:Number}, dt::Real, eps::Real)
 
     N = length(f)
     # FFT
@@ -25,12 +23,22 @@ function espira1(f::Vector{<:Number}, dt::Real, eps::Real)
     return Exponentials(freq, coef)
 end
 
+"""
+    espira1(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real) :: Exponentials
+
+Perform the ESPIRA-I algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given tolerance `eps`.
+"""
 function espira1(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real)
     dt = (tmax - tmin) / (nsamples - 1)
     f = [func(tmin + dt * (k-1)) for k in 1:nsamples]
     return espira1(f, dt, eps)
 end
 
+"""
+    espira1(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real) :: Exponentials
+
+Perform the ESPIRA-I algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given tolerance `eps`.
+"""
 function espira1(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
@@ -38,7 +46,12 @@ function espira1(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real)
     return espira1(f, dt, eps)
 end
 
-function espira1(f::Vector{<:Number}, dt::Real, M::Int)
+"""
+    espira1(f::Vector{<:Number}, dt::Real, M::Int) :: Exponentials
+
+Perform the ESPIRA-I algorithm using discrete data `f` and the sampling interval `dt` for a given model order `M`.
+"""
+function espira1(f::AbstractVector{<:Number}, dt::Real, M::Int)
 
     N = length(f)
     # FFT
@@ -58,12 +71,22 @@ function espira1(f::Vector{<:Number}, dt::Real, M::Int)
     return Exponentials(freq, coef)
 end
 
+"""
+    espira1(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int) :: Exponentials
+
+Perform the ESPIRA-I algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given model order `M`.
+"""
 function espira1(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int)
     dt = (tmax - tmin) / (nsamples - 1)
     f = [func(tmin + dt * (k-1)) for k in 1:nsamples]
     return espira1(f, dt, M)
 end
 
+"""
+    espira1(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int) :: Exponentials
+
+Perform the ESPIRA-I algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given model order `M`.
+"""
 function espira1(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
@@ -97,12 +120,11 @@ function espira2_sub!(z, f, Z, F, F1)
 end
 
 """
-    espira2
+    espira2(f::Vector{<:Number}, dt::Real, eps::Real)  :: Exponentials
     
-This function computes a shifted FFT of its input data and uses AAA to obtain a rational approximant. 
-It then extracts the exponential parameters by converting the resulting poles and residues into a sum of exponentials.
+Perform the ESPIRA-II algorithm using discrete data `f` and the sampling interval `dt` for a given tolerance `eps`.
 """
-function espira2(f::Vector{<:Number}, dt::Real, eps::Real)
+function espira2(f::AbstractVector{<:Number}, dt::Real, eps::Real)
     
     N = length(f)
     f0 = copy(f)
@@ -135,12 +157,22 @@ function espira2(f::Vector{<:Number}, dt::Real, eps::Real)
     return Exponentials(expon, coeff)
 end
 
+"""
+    espira2(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real) :: Exponentials
+
+Perform the ESPIRA-II algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given tolerance `eps`.
+"""
 function espira2(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real)
     dt = (tmax - tmin) / (nsamples - 1)
     f = [func(tmin + dt * (k-1)) for k in 1:nsamples]
     return espira2(f, dt, eps)
 end
 
+"""
+    espira2(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real) :: Exponentials
+
+Perform the ESPIRA-II algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given tolerance `eps`.
+"""
 function espira2(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
@@ -148,7 +180,12 @@ function espira2(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real)
     return espira2(f, dt, eps)
 end
 
-function espira2(f::Vector{<:Number}, dt::Real, M::Int)
+"""
+    espira2(f::Vector{<:Number}, dt::Real, M::Int) :: Exponentials
+
+Perform the ESPIRA-II algorithm using discrete data `f` and the sampling interval `dt` for a given model order `M`.
+"""
+function espira2(f::AbstractVector{<:Number}, dt::Real, M::Int)
     
     N = length(f)
     f0 = copy(f)
@@ -178,12 +215,22 @@ function espira2(f::Vector{<:Number}, dt::Real, M::Int)
     return Exponentials(expon, coeff)
 end
 
+"""
+    espira2(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int) :: Exponentials
+
+Perform the ESPIRA-II algorithm using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given model order `M`.
+"""
 function espira2(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int)
     dt = (tmax - tmin) / (nsamples - 1)
     f = [func(tmin + dt * (k-1)) for k in 1:nsamples]
     return espira2(f, dt, M)
 end
 
+""" 
+    espira2(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int) :: Exponentials
+
+Perform the ESPIRA-II algorithm using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given model order `M`.
+"""
 function espira2(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1

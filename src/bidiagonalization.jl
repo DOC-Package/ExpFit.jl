@@ -47,11 +47,6 @@ function fft_hankel(L::Int, K::Int, h::AbstractVector{<:Number}) :: Vector{Compl
     return fft_h
 end
 
-"""
-    fnrm(s)
-
-Generic weighted norm computation
-"""
 function fnrm(s::AbstractVector{<:Number})
     n = length(s)
     n2 = div(n, 2)
@@ -60,12 +55,6 @@ function fnrm(s::AbstractVector{<:Number})
     return sqrt(res1 + res2)
 end
 
-"""
-Generic Partial Lanczos Bidiagonalization
-
-This function extends partial_lanczos_bidiagonalization_dble to handle both
-real and complex input vectors s.
-"""
 function partial_lanczos_bidiagonalization(h::AbstractVector{T}, tol::Real) where T<:Number
     n = length(h)
     m = div(n, 2) + 1

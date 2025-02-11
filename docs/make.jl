@@ -4,10 +4,10 @@ using DocumenterCitations
 
 DocMeta.setdocmeta!(ExpFit, :DocTestSetup, :(using ExpFit); recursive=true)
 
-#bib = CitationBibliography(
-#    joinpath(@__DIR__, "src", "refs.bib");
-#    style=:numeric
-#)
+bib = CitationBibliography(
+    joinpath(@__DIR__, "src", "ExpFit.bib");
+    style=:numeric
+)
 
 makedocs(;
     modules=[ExpFit],
@@ -21,11 +21,11 @@ makedocs(;
     pages=[
         "Home" => "index.md",
         "Exponential Fitting" => "expfit.md",
-        "Exponential Reduction" => "expred.md",
+        "Exponential Model Reduction" => "expred.md",
         "References" => "reference.md",
     ],
     draft=get(ENV, "CI", "false") == "false",
-    #plugins=[bib]
+    plugins=[bib]
 )
 
 deploydocs(;

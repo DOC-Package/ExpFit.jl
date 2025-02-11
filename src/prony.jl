@@ -1,11 +1,3 @@
-"""
-    takagi_factor(A::Matrix{ComplexF64}) -> (sv, Uz, err)
-
-Perform the Takagi factorization on a complex symmetric matrix A.
-Returns the vector of singular values `sv`, the matrix `Uz`,
-and the norm of the difference between A and Uz*S*Uz^T.
-"""
-
 function takagi_factor(A::AbstractMatrix{T}; err::Bool=false) where T<:Number
     
     n = size(A, 1)
@@ -69,12 +61,12 @@ function prony_sub(hk::AbstractVector{<:Number}, M::Int)
     return γ
 end
 
-"""
-    prony(func, tmax, Nin, Mout)
 
-Estimate the exponents and coefficients of the Prony series for the function `func`.    
 """
+    prony(hk::Vector{<:Number}, dt::Real, eps::Real) :: Exponentials
 
+Perform the Prony method using discrete data `hk` and the sampling interval `dt` for a given tolerance `eps`.
+"""
 function prony(hk::AbstractVector{<:Number}, dt::Real, eps::Real)
     if iseven(length(hk))
         hk = hk[1:end-1]
@@ -85,6 +77,11 @@ function prony(hk::AbstractVector{<:Number}, dt::Real, eps::Real)
     return Exponentials(expon, coeff)
 end
 
+"""
+    prony(func::Function, tmin::Real, tmax::Real, nsamples::Int, eps::Real) :: Exponentials
+
+Perform the Prony method using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given tolerance `eps`.
+"""
 function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, eps::Float64)
     if iseven(nsamples)
         nsamples += 1
@@ -95,6 +92,11 @@ function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, eps:
     return prony(hk, dt, eps)
 end
 
+"""
+    prony(func::Function, tmin::Real, tmax::Real, dt::Real, eps::Real) :: Exponentials
+
+Perform the Prony method using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given tolerance `eps`.
+"""
 function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, eps::Float64)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1
@@ -106,6 +108,11 @@ function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, eps::Floa
     return prony(hk, dt, eps)
 end
 
+"""
+    prony(hk::Vector{<:Number}, dt::Real, M::Int) :: Exponentials
+
+Perform the Prony method using discrete data `hk` and the sampling interval `dt` for a given model order `M`.
+"""
 function prony(hk::AbstractVector{<:Number}, dt::Real, M::Int)
     if iseven(length(hk))
         hk = hk[1:end-1]
@@ -116,6 +123,11 @@ function prony(hk::AbstractVector{<:Number}, dt::Real, M::Int)
     return Exponentials(expon, coeff)
 end
 
+"""
+    prony(func::Function, tmin::Real, tmax::Real, nsamples::Int, M::Int) :: Exponentials
+
+Perform the Prony method using a function `func` in the range [tmin,tmax] and `nsamples` sampling points for a given model order `M`.
+"""
 function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, M::Int)
     if iseven(nsamples)
         nsamples += 1
@@ -126,6 +138,11 @@ function prony(func::Function, tmin::Float64, tmax::Float64, nsamples::Int, M::I
     return prony(hk, dt, M)
 end
 
+"""
+    prony(func::Function, tmin::Real, tmax::Real, dt::Real, M::Int) :: Exponentials
+
+Perform the Prony method using a function `func` in the range [tmin,tmax] and a sampling interval `dt` for a given model order `M`.
+"""
 function prony(func::Function, tmin::Float64, tmax::Float64, dt::Real, M::Int)
     @assert isapprox((tmax-tmin)/dt, round((tmax-tmin)/dt), atol=1e-12) "(tmax-tmin)/dt must be an integer"
     nsamples = Int(round((tmax-tmin)/dt)) + 1

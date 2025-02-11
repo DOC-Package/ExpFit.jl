@@ -7,8 +7,7 @@ function plot_res(t::AbstractVector{<:Real},
                   approx::AbstractVector{<:Number},
                   err::AbstractVector{<:Number})
     # Style parameters (matching Python style)
-    ls1    = 20      # label font size
-    ls2    = 15      # tick label font size
+    ls1    = 25      # label font size
     lw1    = 2.5     # line width for main lines
     lw2    = 2.5     # line width for reference lines
     color1 = :orangered
@@ -21,27 +20,27 @@ function plot_res(t::AbstractVector{<:Real},
     # Top axis: Bath correlation function (BCF) plot.
     ax1 = Axis(fig[1, 1],
         xlabel = "",
-        ylabel = L"C(t)",
-        xlabelsize = ls2,
-        ylabelsize = ls2
+        ylabel = L"f(t)",
+        xlabelsize = ls1,
+        ylabelsize = ls1
     )
 
     # Bottom axis: Error plot.
     ax2 = Axis(fig[2, 1],
-        xlabel = L"t (\mathrm{fs})",
-        ylabel = L"\delta C(t)",
-        xlabelsize = ls2,
-        ylabelsize = ls2
+        xlabel = L"t",
+        ylabel = L"\delta f(t)",
+        xlabelsize = ls1,
+        ylabelsize = ls1
     )
 
     # Plot on the top axis: Approximate BCF (real and imaginary parts)
     lines!(ax1, t, real.(approx),
-        label = L"\mathrm{Re}\,C(t)",
+        label = L"\mathrm{Re}\,f(t)",
         color = color1,
         linewidth = lw1
     )
     lines!(ax1, t, imag.(approx),
-        label = L"\mathrm{Im}\,C(t)",
+        label = L"\mathrm{Im}\,f(t)",
         color = color2,
         linewidth = lw1
     )
@@ -70,7 +69,7 @@ function plot_res(t::AbstractVector{<:Real},
     )
 
     # Add a legend to the top axis at the top-right position.
-    axislegend(ax1, position = :rt, labelsize = ls2)
+    axislegend(ax1, position = :rt, labelsize = ls1)
 
     # Save the figure as a PNG file.
     save("result.png", fig)
