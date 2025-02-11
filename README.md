@@ -8,12 +8,19 @@ Exponential Fitting Package
 
 This package contains algorithms for fitting functions or discrete data with a sum of exponentials and for reducing the order of a sum of exponentials.
 
+## Installation
+
+```julia
+    julia> using Pkg
+
+    julia> Pkg.add(; url="https://github.com/DOC-package/ExpFit.jl")
+```
 
 ## Simple usage
 
 As an example, we consider approximating a Bessel function.  It is necessary to specify the range of approximation `[0.0,10.0]`, the number of sample points `N=100`, and the tolerance `tol=1e-2`.  Here is the script.
 
-```
+```julia
    julia> using ExpFit
 
    julia> using SpecialFunctions
@@ -26,7 +33,7 @@ As an example, we consider approximating a Bessel function.  It is necessary to 
 ```
 
 The obtained exponents and coefficients are contained in `ef`
-```
+```julia
    julia> println("Exponents: ", ef.expon)
    Exponents: ComplexF64[0.6452980998429971 - 0.45960031394319034im, 0.07441134082707875 - 0.9779354644348793im, 0.4140265306909683 + 0.7881686630201671im]
    
@@ -35,7 +42,7 @@ The obtained exponents and coefficients are contained in `ef`
 ```
 
 As another use case, you can directly input equally spaced discrete sample data.  In this case, a time interval is required.
-```
+```julia
     julia> t = range(0.0, 10.0, length=100)
     0.0:0.10101010101010101:10.0
 

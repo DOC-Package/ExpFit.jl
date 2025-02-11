@@ -1,17 +1,17 @@
 # Exponential Fitting
 
-## Exponentials
+## `Exponentials` type
 
 First, we introduce [`ExpFit.Exponentials`](@ref) type.  This type contains two fields: Exponents and coefficients of a sum of exponentials.  Let us show you how to use it.
 
 We define an instance using `exponent` and `coefficient`.
-```
+```julia
 exponent = [1.0 + 2.0im, 3.0 + 4.0im]
 coefficient = [5.0 + 6.0im, 7.0 + 8.0im]
 ef = Exponentials(exponent, coefficient)
 ```
 The instance `ef` contains the exponents and coefficients.
-```
+```julia
 julia> ef.expon
 2-element Vector{ComplexF64}:
  1.0 + 2.0im
@@ -22,7 +22,7 @@ julia> ef.coeff
  7.0 + 8.0im
 ```
 `ef` also has a method and can be used as a function that returns `sum(ef.coeff .* exp.(-ef.expon .* (t-t0)))`
-```
+```julia
 julia> f = t -> ef(t)
 #1 (generic function with 1 method)
 
@@ -30,10 +30,10 @@ julia> g = t -> ef(t, 1.0)
 #3 (generic function with 1 method)
 ```
 
-## expfit
+## `expfit`
 As an example to demonstrate how to use the `expfit` function, consider approximating a Bessel function with a sum of exponentials. The following is the code. 
 
-```
+```julia
 sing LinearAlgebra
 using ExpFit
 using SpecialFunctions
@@ -63,19 +63,22 @@ Root mean square = 0.0005937677782521255
 The Bessel function was approximated with six terms.
 
 The results are also illustrated below.
-![result1](result1.png)
+
+```@raw html
+<img src="result1.png" width="75%"/>
+```
 
 We observe that the absolute error $\delta f(t)$ is within the tolerance.
 
 As an alternative use case, equally spaced discrete data can be input into the `expfit` function. Here, dt represents the time interval.
-```
+```julia
 dt = (tmax-tmin) / (N-1)
 fv = f.(t)
 ef = expfit(fv, dt, tol)
 ```
 
 Additionally, the approximation order can be set instead of the tolerance.
-```
+```julia
 order = 10
 ef = expfit(f, tmin, tmax, N, order)
 ef = expfit(fv, dt, order)
@@ -85,7 +88,7 @@ ef = expfit(fv, dt, order)
 
 The default algorithm used in `expfit` is ESPRIT algorithm.  
 If you want use a different algorithm, you can set the `alg` option  as
-```
+```julia
 ef = expfit(fv, dt, tol; alg=ESPIRA1())
 ```
 Available algorithms and corresponding options are shown below.
