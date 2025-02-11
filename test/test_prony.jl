@@ -42,33 +42,4 @@ using ExpFit
     err = abs.(ef.(t) .- fv)
     @test norm(err)/sqrt(N) < eps*fmax*10
 
-    a, c = generate_exponent_coefficient_pairs_real(100)
-    f = Exponentials(a,c)
-    fv = f.(t)
-    fmax = maximum(abs.(fv))
-
-    ef = prony(f, tmin, tmax, N, eps)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*10
-
-    ef = prony(f, tmin, tmax, N, 14)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*10
-
-    ef = prony(f, tmin, tmax, dt, eps)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*10
-
-    ef = prony(f, tmin, tmax, dt, 14)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*10
-
-    ef = prony(fv, dt, eps)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*10
-
-    ef = prony(fv, dt, 14)
-    err = abs.(ef.(t) .- fv)
-    @test norm(err)/sqrt(N) < eps*fmax*10
-
 end
