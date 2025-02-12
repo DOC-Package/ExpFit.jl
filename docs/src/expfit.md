@@ -31,6 +31,7 @@ julia> g = t -> ef(t, 1.0)
 ```
 
 ## `expfit`
+
 As an example to demonstrate how to use the `expfit` function, consider approximating a Bessel function with a sum of exponentials. The following is the code. 
 
 ```julia

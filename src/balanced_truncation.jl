@@ -21,8 +21,12 @@ end
     balanced_truncation(a::AbstractVector{<:Number}, c::AbstractVector{<:Number}, eps::Float64) :: Exponentials
 
 Given the exponents `a` and coefficients `c` of a sum of exponentials, compute a new sum of exponentials with a reduced number of terms for a given tolerance `eps`.
+The initial exponents must have positive real part.
 """
 function balanced_truncation(a::AbstractVector{<:Number}, c::AbstractVector{<:Number}, eps::Float64)
+    if any(x -> real(x) < 0, a)
+        throw(ArgumentError("The exponents must have positive real part."))
+    end
     a = ComplexF64.(a); c = ComplexF64.(c)
     sv, U = coneig(sqrt.(c), sqrt.(conj.(c)), a, conj.(a))
     M = findfirst(i -> 2 * sum(sv[i+1:end]) < eps, 1:length(sv))
@@ -34,8 +38,13 @@ end
     balanced_truncation(a::AbstractVector{<:Number}, c::AbstractVector{<:Number}, M::Int) :: Exponentials
 
 Given the exponents `a` and coefficients `c` of a sum of exponentials, compute a new sum of exponentials with a given number of terms `M`.
+The initial exponents must have positive real part.
 """
 function balanced_truncation(a::AbstractVector{<:Number}, c::AbstractVector{<:Number}, M::Int)
+    # check if the real part of the exponents is positive
+    if any(x -> real(x) < 0, a)
+        throw(ArgumentError("The exponents must have positive real part."))
+    end
     a = ComplexF64.(a); c = ComplexF64.(c)
     sv, U = coneig(sqrt.(c), sqrt.(conj.(c)), a, conj.(a))
     Um = U[:, 1:M]
