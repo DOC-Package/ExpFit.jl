@@ -10,7 +10,7 @@ DocTestSetup = quote
 end
 ```
 
-## Inspection
+## Methods
 
 ```@autodocs
 Modules = [ExpFit]

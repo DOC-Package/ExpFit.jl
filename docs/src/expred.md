@@ -16,10 +16,19 @@ Let `a` be the vector storing the initial exponents and `c` be the vector storin
 ```julia
 er = expred(a, c, 1e-2)
 print("Approximation order = ", length(er.coeff), "\n")
+
+t = range(0.0, 50.0, length=100)
+err = abs.(er.(t) .- Exponentials(a,c).(t))
+println("Root mean square = ", norm(err)/sqrt(N))
 ```
 `er` is an instance of the `Exponentials` type.
 
-```julia
-f = Exponentials(a,c)
+When executed, the terminal will display the following.
 ```
+Approximation order = 10
+Root mean square = 0.0003602011932219654
+```
+
+The results are also illustrated below.
+![result2](result2.png)
 

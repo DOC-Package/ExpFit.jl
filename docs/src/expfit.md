@@ -48,9 +48,7 @@ ef = expfit(f, tmin, tmax, N, tol)
 print("Approximation order = ", length(ef.coeff), "\n")
 
 t = range(tmin, tmax, length=N*2)
-fv = f.(t)
-efv = ef.(t)
-err = abs.(efv .- fv)
+err = abs.(ef.(t) .- f.(t))
 println("Root mean square = ", norm(err)/sqrt(N))
 ```
 Here, tmin and tmax specify the range used for the approximation, N is the number of sample points, and tol is the tolerance.
@@ -61,13 +59,10 @@ When executed, the terminal will display the following.
 Approximation order = 6
 Root mean square = 0.0005937677782521255
 ```
-The Bessel function was approximated with six terms.
+The Bessel function was approximated with six terms for the tolerance of $10^{-2}$.
 
 The results are also illustrated below.
-
-```@raw html
-<img src="result1.png" width="75%"/>
-```
+![result1](result1.png)
 
 We observe that the absolute error $\delta f(t)$ is within the tolerance.
 
@@ -93,12 +88,14 @@ If you want use a different algorithm, you can set the `alg` option  as
 ef = expfit(fv, dt, tol; alg=ESPIRA1())
 ```
 Available algorithms and corresponding options are shown below.
-- alg=ESPRIT()
-- alg=Pencil()
-- alg=Prony()
-- alg=ESPIRA1()
-- alg=ESPIRA2()
-- alg=FastESPRIT()
+| Alogrithm | Option "alg" |
+| --------  | ------------ |
+| ESPRIT | ESPRIT()    |
+| Matrix Pencil | Pencil() |
+| Prony    | Prony()    |
+| ESPIRA-I | ESPIRA1() |
+| ESPIRA-II | ESPIRA2() |
+| Fast ESPRIT | FastESPRIT() |
 
 
 Please see [Reference](@ref) for all the available methods.

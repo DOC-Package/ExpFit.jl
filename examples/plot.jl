@@ -15,7 +15,7 @@ function plot_res(t::AbstractVector{<:Real},
     color3 = :black
 
     # Create a figure with 2 rows and 1 column.
-    fig = Figure(size = (800, 700))
+    fig = Figure(size = (640, 560))
 
     # Top axis: Bath correlation function (BCF) plot.
     ax1 = Axis(fig[1, 1],
