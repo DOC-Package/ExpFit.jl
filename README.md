@@ -63,6 +63,30 @@ As another use case, you can directly input equally spaced discrete sample data.
 
 For more details, please refer to [the documentation](https://doc-package.github.io/ExpFit.jl/dev/).
 
+## Citation
+
+The algorithms in this package are summerized in
+- H. Takahashi and R. Borrelli, J. Chem. Phys. 161, 151101 (2024). (https://doi.org/10.1063/5.0232232) 
+
+If you find the package useful in your research, we would be grateful if you could cite our publication.
+Here are the bibtex entries:
+```bib
+@article{TakahashiEtAl2024TJoCP,
+  title = {High Accuracy Exponential Decomposition of Bath Correlation Functions for Arbitrary and Structured Spectral Densities: {{Emerging}} Methodologies and New Approaches},
+  shorttitle = {High Accuracy Exponential Decomposition of Bath Correlation Functions for Arbitrary and Structured Spectral Densities},
+  author = {Takahashi, Hideaki and Rudge, Samuel and Kaspar, Christoph and Thoss, Michael and Borrelli, Raffaele},
+  year = {2024},
+  month = may,
+  journal = {The Journal of Chemical Physics},
+  volume = {160},
+  number = {20},
+  pages = {204105},
+  issn = {0021-9606},
+  doi = {10.1063/5.0209348},
+}
+
+```
+
 
 
 
