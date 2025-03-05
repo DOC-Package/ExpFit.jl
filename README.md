@@ -66,7 +66,8 @@ For more details, please refer to [the documentation](https://doc-package.github
 ## Citation
 
 The algorithms in this package are summerized in
-- H. Takahashi and R. Borrelli, J. Chem. Phys. 161, 151101 (2024). (https://doi.org/10.1063/5.0232232) 
+- H. Takahashi, S. Rudge, C. Kaspar, M. Thoss, and R. Borrelli, J. Chem. Phys. 160, 204105 (2024). (https://doi.org/10.1063/5.0209348) 
+Please check the references of the paper for the reference to the original paper of the algorithms. 
 
 If you find the package useful in your research, we would be grateful if you could cite our publication.
 Here are the bibtex entries:
